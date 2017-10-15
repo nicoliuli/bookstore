@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.itcast.ssm.mapper.ItemMapper">
+	
+	<!-- 根据userId和bookId删除从购物车中提交过来的书 -->
+	<delete id="deleteShop" parameterType="cn.itcast.ssm.pojo.Item">
+		delete from shopcart where user_id=#{userId} and book_id=#{bookId}
+	</delete>
+	
+	<!-- 将从购物车提交的商品写入Item表 -->
+	<insert id="addItem" parameterType="cn.itcast.ssm.pojo.Item">
+		insert into item(user_id,book_id,book_name,book_num,book_price,status) values(#{userId},#{bookId},#{bookName},#{bookNum},#{bookPrice},0);
+	</insert>
+	
+	<!-- 根据userid查询我的订单 -->
+	<select id="getMyItemsById" resultType="cn.itcast.ssm.pojo.Item" parameterType="int">
+		select 
+			user_id userId,
+			book_id bookId,
+			book_name bookName,
+			book_price bookPrice,
+			book_num bookNum,
+			status
+			from item where user_id=#{id} order by status
+	</select>
+</mapper>

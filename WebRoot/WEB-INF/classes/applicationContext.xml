@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+            http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/mvc
+			http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+           
+    <!-- 加载配置文件 -->  
+    <context:property-placeholder location="classpath:db.properties"/>
+    <!-- 配置数据源 ,数据库链接信息,两种数据源都可以
+    jdbc:	org.springframework.jdbc.datasource.DriverManagerDataSource
+    dbcp:	org.apache.commons.dbcp.BasicDataSource 需要制定method="close"
+    -->
+   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+   		<property name="driverClassName" value="${jdbc.driver}"/>
+   		<property name="url" value="${jdbc.url}"/>
+   		<property name="username" value="${jdbc.username}"/>
+   		<property name="password" value="${jdbc.password}"/>
+   </bean>  
+   
+	
+	
+    <!-- 配置SqlSessionFactory,目的是的到SqlSessionFactory对象-->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 加载SqlMapConfig.xml配置文件 -->
+		<property name="configLocation" value="classpath:SqlMapConfig.xml"></property>
+	</bean>
+	
+	<!-- 配置拦截器 -->
+	<mvc:interceptors>
+		<!-- 多个拦截器顺序执行 -->
+		<mvc:interceptor>
+			<!-- /**表示拦截所有url，包括子url -->
+			<mvc:mapping path="/**"/>
+			<!-- 自定义的拦截器的类 -->
+			<bean class="cn.itcast.ssm.interceptor.LoginInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<!-- 配置文件上传 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize">
+			<!-- 最大上传大小：500M -->
+			<value>524288000</value>
+		</property>
+	</bean>
+	
+	<import resource="config/spring/book.xml"/>
+	<import resource="config/spring/user.xml"/>
+	<import resource="config/spring/shopcart.xml"/>
+	<import resource="config/spring/getRandomNum.xml" />
+	<import resource="config/spring/item.xml" />
+	<import resource="config/spring/manager.xml" />
+  
+</beans>

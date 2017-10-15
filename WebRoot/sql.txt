@@ -1,0 +1,28 @@
+create table user(
+	id int primary key auto_increment,	//用户id
+	username varchar(40),	//用户名
+	password varchar(50)	//密码
+);
+create table book(
+	id int primary key,
+	bookname varchar(30),	//书名
+	author varchar(30),		//作者
+	price double,	//价钱
+	descripse varchar(50)	//描述
+);	
+create table shopcart(
+
+	user_id int,	//用户id，外键
+	book_id int,	//书的id，外键
+	book_number int,	//书的个数
+	foreign key (user_id) references user(id),
+	foreign key (book_id) references book(id)
+);
+create table item(
+	user_id int,	//用户id
+	book_id int,	//书id
+	book_name varchar(30), //书名
+	book_num int,	//书的数量
+	book_price double,	//书的价钱
+	status int	//订单的状态（1发货，0代发货）
+);
