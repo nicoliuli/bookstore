@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop.xsd
+            http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-4.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+           http://www.springframework.org/schema/mvc
+			http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+           
+   <!-- BookDaoImpl接口继承了SqlSessionDaoSupport，所以要注入sqlSessionFactory    -->
+   <bean id="ItemDao" class="cn.itcast.ssm.dao.impl.ItemDaoImpl">
+   		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+   </bean>
+   <bean id="ItemService" class="cn.itcast.ssm.service.impl.ItemServiceImpl">
+   		<property name="itemdao" ref="ItemDao"></property>
+   </bean>
+ 
+<!-- 配置handler -->
+	<bean class="cn.itcast.ssm.controller.ItemController">
+		<property name="itemService" ref="ItemService"></property>
+	</bean>
+
+  <mvc:annotation-driven/>
+  
+  <!-- 配置视图解析器 -->
+  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"></bean>
+</beans>

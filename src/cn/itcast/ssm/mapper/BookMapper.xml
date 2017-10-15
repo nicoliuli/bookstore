@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.itcast.ssm.mapper.BookMapper">
+	
+	<!-- 设置刷新缓存的时间10s -->
+	<cache flushInterval="10000"></cache>
+	<!-- 按书名查询图书的信息 -->
+	<select id="findBookByName" parameterType="java.lang.String" resultType="cn.itcast.ssm.pojo.Book">
+		select * from book where bookname like '%${value}%'
+	</select>
+	
+	<!-- 得到所有的图书,开启二级缓存 -->
+	<select id="getAllBook" resultType="cn.itcast.ssm.pojo.Book" useCache="true">
+		select * from book
+	</select>
+</mapper>

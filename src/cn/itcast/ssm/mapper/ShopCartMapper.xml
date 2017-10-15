@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.itcast.ssm.mapper.ShopCartMapper">
+	
+	<!-- 如果点击的书在购物车不存在，将点击的书加入购物车 -->
+	<insert id="addToShopcart" parameterType="cn.itcast.ssm.pojo.UserBook">
+		insert into shopcart(user_id,book_id,book_number) values(#{user_id},#{book_id},1)
+	</insert>
+	
+	
+	<!-- 如果点击的书在购物车中存在，数量加1 -->
+	<update id="addCountOfBook" parameterType="cn.itcast.ssm.pojo.UserBook">
+		update shopcart set book_number=book_number+1 where book_id=#{book_id} and user_id=#{user_id}
+	</update>
+	
+	<!-- 商品数量-1 -->
+	<update id="bookSubOne" parameterType="cn.itcast.ssm.pojo.UserBook">
+		update shopcart set book_number=book_number-1 where book_id=#{book_id} and user_id=#{user_id}
+	</update>
+	
+	<!-- 查看当前购物车是否有此书 ,返回1或0，代表有或无-->
+	<select id="isInShopcart" parameterType="cn.itcast.ssm.pojo.UserBook" resultType="int">
+		select count(book_number) from shopcart where book_id=#{book_id} and user_id=#{user_id}
+	</select>
+	
+	<!-- 查看某书的数量-->
+	<select id="countOfBook" parameterType="cn.itcast.ssm.pojo.UserBook" resultType="int">
+		select book_number from shopcart where book_id=#{book_id} and user_id=#{user_id}
+	</select>
+	
+	<!-- 查看当前用户的购物车 -->
+	<!--
+		select book.id,book.bookname,book.price,shopcart.book_number 
+		from shopcart,book,user 
+		where user.id=shopcart.user_id and book.id=shopcart.book_id and user.id=#{user.id}; 
+	-->
+	<select id="findShopCart" parameterType="int" resultMap="findUserShopCart">		
+		select user.id user_id,
+				book.id book_id,
+				book.bookname book_name,
+				book.price book_price,
+				shopcart.book_number book_number
+		from user,book,shopcart
+		where user.id=#{id} and shopcart.user_id=#{id} and book.id=shopcart.book_id
+		order by book_id asc
+	</select>
+	
+	<resultMap type="cn.itcast.ssm.pojo.User" id="findUserShopCart">
+		<id column="user_id" property="id"/>
+		<collection property="bookList" ofType="cn.itcast.ssm.pojo.Book">
+			<id column="book_id" property="id"/>
+			<result column="book_name" property="bookName"/>
+			<result column="book_price" property="price"/>
+			<association property="shopCart" javaType="cn.itcast.ssm.pojo.Shopcart">
+				<result column="book_number" property="bookNumber"/>
+			</association>
+		</collection>
+	</resultMap>
+	
+	<!-- 清空当前用户的购物车 -->
+	<delete id="clearShopCart" parameterType="int">
+		delete from shopcart where user_id=#{id}
+	</delete>
+	
+	<!-- 从购物车中删除商品 -->
+	<delete id="deleteBook" parameterType="cn.itcast.ssm.pojo.UserBook">
+		delete from shopcart where user_id=#{user_id} and book_id=#{book_id}
+	</delete>
+</mapper>

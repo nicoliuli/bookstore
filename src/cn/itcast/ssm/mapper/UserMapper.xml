@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.itcast.ssm.mapper.UserMapper">
+	
+	<!-- 用户注册时检测用户名是否存在 -->
+	<select id="findUserByUsername" parameterType="cn.itcast.ssm.pojo.User" resultType="cn.itcast.ssm.pojo.User">
+		select username from user where username like '${username}'
+	</select>
+	
+	<!-- 将新注册的用户名添加到数据库 -->
+	<insert id="insertUser" parameterType="cn.itcast.ssm.pojo.User">
+		insert into user(username,password) values(#{username},#{password})
+	</insert>
+	
+	<!-- 用户登录时判断用户的用户名和密码是正确 -->
+	<select id="findUsernameAndPassword" parameterType="cn.itcast.ssm.pojo.User" resultType="cn.itcast.ssm.pojo.User">
+		select id,username,password from user where username like '${username}' and password like '${password}'
+	</select>
+</mapper>

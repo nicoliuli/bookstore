@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.itcast.ssm.mapper.ManagerMapper">
+	
+	<!-- 后台管理员查看所有的订单控制订单的发货状态 -->
+	<select id="getAllItem" resultType="cn.itcast.ssm.pojo.Item">
+		select 
+			book_id bookId,
+			book_name bookName,
+			book_num bookNum,
+			book_price bookPrice,
+			user_id userId,
+			status
+		from item order by status;
+	</select>
+	
+	<!--改变发货的状态-->
+	<update id="chstatus" parameterType="cn.itcast.ssm.pojo.Item">
+		update item set status=1 where user_id=#{userId} and book_id=#{bookId}
+	</update>
+</mapper>
